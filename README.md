@@ -45,7 +45,7 @@ curl localhost:8080/chat -s -d text="Spring Bootについて100文字程度で�
 ストリーミングも行えます。
 
 ```sh
-curl localhost:8080/chat/stream -s -N -H "Accept: text/event-stream" -d text="こんにちは"
+curl localhost:8080/chat/stream -s -N -d text="こんにちは"
 ```
 
 結果は次の通りです。
