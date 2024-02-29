@@ -1,6 +1,6 @@
 # Spring AI example
 
-OpenAIを使ってSpring AIを試します。
+[Spring AI](https://docs.spring.io/spring-ai/reference/)を試します。
 
 ## 準備
 
@@ -117,3 +117,7 @@ data:ください
 
 data:。
 ```
+
+## その他の情報
+
+- `org.springframework.ai.autoconfigure.openai.OpenAiChatProperties`を見ると、デフォルトの言語モデルは`gpt-3.5-turbo`みたい
