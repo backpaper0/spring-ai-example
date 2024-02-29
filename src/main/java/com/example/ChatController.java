@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import reactor.core.publisher.Flux;
 
+/**
+ * Chat Completionsを試す。
+ * 
+ */
 @RestController
 @RequestMapping("/chat")
 public class ChatController {

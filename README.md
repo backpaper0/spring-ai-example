@@ -118,6 +118,31 @@ data:ください
 data:。
 ```
 
+### ベクトル検索
+
+OpenAIの[Embeddings](https://platform.openai.com/docs/guides/embeddings)でベクトル化し、[pgvector](https://github.com/pgvector/pgvector)へ格納します。
+
+まずはドキュメントのサンプルを追加します。
+
+```sh
+curl localhost:8080/search -XPOST
+```
+
+検索します。
+
+```sh
+curl localhost:8080/search -s -G -d q=Spring | jq
+```
+
+結果は次の通りです。
+
+```
+[
+  "Spring AI rocks!! Spring AI rocks!! Spring AI rocks!! Spring AI rocks!! Spring AI rocks!!"
+]
+```
+
 ## その他の情報
 
 - `org.springframework.ai.autoconfigure.openai.OpenAiChatProperties`を見たところ、デフォルトの言語モデルは`gpt-3.5-turbo`みたい
+- `spring-boot-docker-compose`を入れたのに起動時に`spring.datasource.url`が無いと言われた。動的に設定されるんじゃなかったっけ？
