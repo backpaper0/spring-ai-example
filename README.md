@@ -120,4 +120,4 @@ data:。
 
 ## その他の情報
 
-- `org.springframework.ai.autoconfigure.openai.OpenAiChatProperties`を見ると、デフォルトの言語モデルは`gpt-3.5-turbo`みたい
+- `org.springframework.ai.autoconfigure.openai.OpenAiChatProperties`を見たところ、デフォルトの言語モデルは`gpt-3.5-turbo`みたい
