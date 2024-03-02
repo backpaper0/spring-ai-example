@@ -140,6 +140,38 @@ curl localhost:8080/search -s -G -d q=Spring | jq
 ]
 ```
 
+### Function calling
+
+[Function calling](https://platform.openai.com/docs/guides/function-calling)を試す。
+
+```sh
+curl localhost:8080/chat/fn -s -d text=大阪の気温を教えてください。 | jq
+```
+
+```
+{
+  "content": "大阪の気温は現在8.0度です。",
+  "properties": {
+    "role": "ASSISTANT"
+  },
+  "messageType": "ASSISTANT"
+}
+```
+
+```sh
+curl localhost:8080/chat/fn -s -d text=東京の気温を教えてください。 | jq
+```
+
+```
+{
+  "content": "東京の気温は10.0度です。",
+  "properties": {
+    "role": "ASSISTANT"
+  },
+  "messageType": "ASSISTANT"
+}
+```
+
 ## その他の情報
 
 - `org.springframework.ai.autoconfigure.openai.OpenAiChatProperties`を見たところ、デフォルトの言語モデルは`gpt-3.5-turbo`みたい
