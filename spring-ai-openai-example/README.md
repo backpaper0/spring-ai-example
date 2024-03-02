@@ -176,3 +176,5 @@ curl localhost:8080/chat/fn -s -d text=東京の気温を教えてください�
 
 - `org.springframework.ai.autoconfigure.openai.OpenAiChatProperties`を見たところ、デフォルトの言語モデルは`gpt-3.5-turbo`みたい
 - `spring-boot-docker-compose`を入れたのに起動時に`spring.datasource.url`が無いと言われた。動的に設定されるんじゃなかったっけ？
+- `org.springframework.ai.evaluation.BasicEvaluationTest`を使えば生成された回答の評価ができるみたい
+    - [Ragas](https://docs.ragas.io/)のようなものになっていくのかなー
