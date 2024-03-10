@@ -9,7 +9,7 @@ Spring AIで[LangChainのLCELクックブックのRAG](https://python.langchain.
 ## 起動
 
 ```sh
-./mvnw spring-boot:run
+mvn spring-boot:run
 ```
 
 ## 実行
