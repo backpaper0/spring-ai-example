@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.ai.chat.ChatClient;
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ public class RagController {
 
                 Question: %1$s
                 """.formatted(question, context);
-        String answer = chatClient.call(prompt);
+        String answer = chatClient.prompt().user(prompt).call().content();
 
         return answer;
     }
@@ -61,7 +61,7 @@ public class RagController {
                         chatHistory.stream().collect(Collectors.joining("\n")))
                 .strip();
 
-        String input = chatClient.call(condenseQuestionPromt);
+        String input = chatClient.prompt().user(condenseQuestionPromt).call().content();
 
         // 検索
         List<Document> docs = vectorStore.similaritySearch(input);
@@ -74,7 +74,7 @@ public class RagController {
 
                 Question: %1$s
                 """.formatted(input, context);
-        String answer = chatClient.call(answerPrompt);
+        String answer = chatClient.prompt().user(answerPrompt).call().content();
 
         return answer;
     }

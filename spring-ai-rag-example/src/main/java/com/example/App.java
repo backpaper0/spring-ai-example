@@ -2,8 +2,9 @@ package com.example;
 
 import java.util.List;
 
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.document.Document;
-import org.springframework.ai.embedding.EmbeddingClient;
+import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,9 +18,14 @@ public class App {
     }
 
     @Bean
-    SimpleVectorStore simpleVectorStore(EmbeddingClient embeddingClient) {
-        SimpleVectorStore vectorStore = new SimpleVectorStore(embeddingClient);
+    SimpleVectorStore simpleVectorStore(EmbeddingModel embeddingModel) {
+        SimpleVectorStore vectorStore = new SimpleVectorStore(embeddingModel);
         vectorStore.add(List.of(new Document("harrison worked at kensho")));
         return vectorStore;
+    }
+
+    @Bean
+    ChatClient chatClient(ChatClient.Builder builder) {
+        return builder.build();
     }
 }
