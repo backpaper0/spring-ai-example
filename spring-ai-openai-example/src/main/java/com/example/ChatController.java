@@ -1,8 +1,7 @@
 package com.example;
 
-import org.springframework.ai.chat.ChatClient;
-import org.springframework.ai.chat.ChatResponse;
-import org.springframework.ai.chat.StreamingChatClient;
+import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.openai.OpenAiChatOptions;
@@ -25,20 +24,18 @@ public class ChatController {
 
     @Autowired
     private ChatClient chatClient;
-    @Autowired
-    private StreamingChatClient streamingChatClient;
 
     @PostMapping
     public Object post(@RequestParam String text) {
         Prompt prompt = new Prompt(text);
-        ChatResponse resp = chatClient.call(prompt);
+        ChatResponse resp = chatClient.prompt(prompt).call().chatResponse();
         return resp.getResult();
     }
 
     @PostMapping(path = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> stream(@RequestParam String text) {
         Prompt prompt = new Prompt(text);
-        return streamingChatClient.stream(prompt)
+        return chatClient.prompt(prompt).stream().chatResponse()
                 .map(resp -> resp.getResult().getOutput().getContent());
     }
 
@@ -48,7 +45,7 @@ public class ChatController {
                 .withFunction("weatherFunction")
                 .build();
         Prompt prompt = new Prompt(text, chatOptions);
-        ChatResponse resp = chatClient.call(prompt);
+        ChatResponse resp = chatClient.prompt(prompt).call().chatResponse();
         return resp.getResult().getOutput();
     }
 }

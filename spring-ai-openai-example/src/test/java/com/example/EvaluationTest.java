@@ -3,8 +3,8 @@ package com.example;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.ai.chat.ChatResponse;
-import org.springframework.ai.chat.Generation;
+import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.chat.model.Generation;
 import org.springframework.ai.evaluation.BasicEvaluationTest;
 import org.springframework.boot.test.context.SpringBootTest;
 

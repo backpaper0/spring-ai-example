@@ -7,7 +7,7 @@
 ## 起動
 
 ```sh
-./mvnw spring-boot:run
+mvn spring-boot:run
 ```
 
 ## 実行

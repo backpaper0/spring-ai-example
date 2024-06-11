@@ -2,6 +2,7 @@ package com.example;
 
 import java.util.function.Function;
 
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -18,5 +19,10 @@ public class App {
     @Description("指定された場所の気温を取得する。")
     Function<WeatherFunction.Request, WeatherFunction.Response> weatherFunction() {
         return new WeatherFunction();
+    }
+
+    @Bean
+    ChatClient chatClient(ChatClient.Builder builder) {
+        return builder.build();
     }
 }
