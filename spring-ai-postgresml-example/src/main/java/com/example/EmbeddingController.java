@@ -1,6 +1,6 @@
 package com.example;
 
-import org.springframework.ai.embedding.EmbeddingClient;
+import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class EmbeddingController {
 
     @Autowired
-    private EmbeddingClient embeddingClient;
+    private EmbeddingModel embeddingModel;
 
     @PostMapping
     public Object post(@RequestParam String text) {
-        return embeddingClient.embed(text);
+        return embeddingModel.embed(text);
     }
 }
