@@ -134,7 +134,7 @@ curl localhost:8080/search -s -G -d q=Spring | jq
 
 結果は次の通りです。
 
-```
+```json
 [
   "Spring AI rocks!! Spring AI rocks!! Spring AI rocks!! Spring AI rocks!! Spring AI rocks!!"
 ]
@@ -142,13 +142,13 @@ curl localhost:8080/search -s -G -d q=Spring | jq
 
 ### Function calling
 
-[Function calling](https://platform.openai.com/docs/guides/function-calling)を試す。
+[Function calling](https://platform.openai.com/docs/guides/function-calling)を試します。
 
 ```sh
 curl localhost:8080/chat/fn -s -d text=大阪の気温を教えてください。 | jq
 ```
 
-```
+```json
 {
   "content": "大阪の気温は現在8.0度です。",
   "properties": {
@@ -162,7 +162,7 @@ curl localhost:8080/chat/fn -s -d text=大阪の気温を教えてください�
 curl localhost:8080/chat/fn -s -d text=東京の気温を教えてください。 | jq
 ```
 
-```
+```json
 {
   "content": "東京の気温は10.0度です。",
   "properties": {
@@ -172,9 +172,37 @@ curl localhost:8080/chat/fn -s -d text=東京の気温を教えてください�
 }
 ```
 
+### マルチモーダル（画像）
+
+マルチモーダルに対応したGPT-4oを使用して画像を説明させます。
+
+```sh
+curl localhost:8080/image-caption -s -d url="https://www.gravatar.com/avatar/e107c65b007e7abb6b2e53054428fb5a" | jq
+```
+
+> [!WARNING]
+> ちなみにタイミングが悪かった（？）のか、この文章を書いているときは高頻度でChat Completion APIに対してタイムアウトが発生していました。
+> タイムアウトが発生しても何度か実行するとそのうち成功するはず……！
+
+結果は次の通りです（「やけどぐ」に笑った）。
+
+```json
+{
+  "messageType": "ASSISTANT",
+  "media": [],
+  "metadata": {
+    "finishReason": "STOP",
+    "role": "ASSISTANT",
+    "id": "chatcmpl-9ZOjFAxExx6mX3exAuO7lAHfR0R6p",
+    "messageType": "ASSISTANT"
+  },
+  "content": "この画像は、雪だるまのイラストです。雪だるまは、黒い目と口、赤い鼻、赤いマフラーをしています。体には青いボタンが3つ描かれています。また、雪だるまの右手には「やけどぐ」という日本語の文字が書かれたオレンジ色の札を持っています。"
+}
+```
+
 ## その他の情報
 
-- `org.springframework.ai.autoconfigure.openai.OpenAiChatProperties`を見たところ、デフォルトの言語モデルは`gpt-3.5-turbo`みたい
+- `org.springframework.ai.autoconfigure.openai.OpenAiChatProperties`を見たところ、デフォルトの言語モデルは~~`gpt-3.5-turbo`~~`gpt-4o`みたい
 - `spring-boot-docker-compose`を入れたのに起動時に`spring.datasource.url`が無いと言われた。動的に設定されるんじゃなかったっけ？
 - `org.springframework.ai.evaluation.BasicEvaluationTest`を使えば生成された回答の評価ができるみたい
     - [Ragas](https://docs.ragas.io/)のようなものになっていくのかなー
