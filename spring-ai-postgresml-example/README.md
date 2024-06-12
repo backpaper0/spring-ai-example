@@ -8,7 +8,7 @@
 mvn spring-boot:run
 ```
 
-> ![NOTE]
+> [!NOTE]
 > PostgresMLの起動が遅くHikariCPの構築時にデータベースへの認証が通らずに失敗することがあります。
 > その場合はあらかじめ`docker compose up -d`でPostgresMLを起動してから`mvn spring-boot:run`するようにしてください。
 
