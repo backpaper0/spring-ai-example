@@ -41,3 +41,9 @@ curl localhost:8080/rag2 -s -d question="where did he work?" -d chatHistory="Hum
 ```
 Harrison worked at Kensho.
 ```
+
+### チャンキング
+
+```bash
+mvn spring-boot:run -Dspring-boot.run.main-class=com.example.chunking.App
+```
