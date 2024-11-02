@@ -47,3 +47,5 @@ Harrison worked at Kensho.
 ```bash
 mvn spring-boot:run -Dspring-boot.run.main-class=com.example.chunking.App
 ```
+
+チャンクは`target/documents.jsonl`へ出力されます。
