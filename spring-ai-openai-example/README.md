@@ -14,7 +14,7 @@ mvn spring-boot:run
 
 ### Chat Completions API
 
-[Chat Completions API](https://platform.openai.com/docs/guides/text-generation/chat-completions-api)によるテキスト生成を試します。
+[Chat Completions API](https://platform.openai.com/docs/api-reference/chat)によるテキスト生成を試します。
 
 次のコマンドを実行してください。
 
@@ -24,18 +24,24 @@ curl localhost:8080/chat -s -d text="Spring Bootについて100文字程度で�
 
 次のような結果が得られます。
 
-```
+```json
 {
-  "metadata": {
-    "contentFilterMetadata": null,
-    "finishReason": "STOP"
-  },
   "output": {
-    "content": "Spring Bootは、Javaプラットフォーム用のオープンソースのマイクロサービスフレームワークであり、簡単にスタンドアロンのSpringアプリケーションを作成できるように設計されています。Spring Bootは、自動構成や自動設定などの機能を提供し、開発者がアプリケーションのビジネスロジックに焦点を当てることができるようにサポートします。",
-    "properties": {
-      "role": "ASSISTANT"
+    "messageType": "ASSISTANT",
+    "metadata": {
+      "finishReason": "STOP",
+      "refusal": "",
+      "index": 0,
+      "role": "ASSISTANT",
+      "id": "chatcmpl-AP5wuWCsYuWPHNElKjC9ss6QXt6wd",
+      "messageType": "ASSISTANT"
     },
-    "messageType": "ASSISTANT"
+    "toolCalls": [],
+    "content": "Spring Bootは、Javaでのアプリケーション開発を簡略化するフレームワークです。設定を自動化し、最小限の設定で実行可能なスタンドアローンアプリケーションを迅速に立ち上げることができます。"
+  },
+  "metadata": {
+    "finishReason": "STOP",
+    "contentFilterMetadata": null
   }
 }
 ```
@@ -55,23 +61,13 @@ data:こんにちは
 
 data:！
 
-data:お
+data:ど
 
-data:困
+data:の
 
-data:り
+data:よう
 
-data:ご
-
-data:と
-
-data:が
-
-data:あ
-
-data:れ
-
-data:ば
+data:に
 
 data:お
 
@@ -81,39 +77,11 @@ data:伝
 
 data:い
 
-data:します
+data:できます
 
-data:の
+data:か
 
-data:で
-
-data:、
-
-data:ど
-
-data:う
-
-data:ぞ
-
-data:お
-
-data:気
-
-data:軽
-
-data:に
-
-data:お
-
-data:知
-
-data:ら
-
-data:せ
-
-data:ください
-
-data:。
+data:？
 ```
 
 ### ベクトル検索
@@ -150,11 +118,17 @@ curl localhost:8080/chat/fn -s -d text=大阪の気温を教えてください�
 
 ```json
 {
-  "content": "大阪の気温は現在8.0度です。",
-  "properties": {
-    "role": "ASSISTANT"
+  "messageType": "ASSISTANT",
+  "metadata": {
+    "refusal": "",
+    "finishReason": "STOP",
+    "index": 0,
+    "id": "chatcmpl-AP6N92LiVVXuAKSXZGFLqJWzFTeh7",
+    "role": "ASSISTANT",
+    "messageType": "ASSISTANT"
   },
-  "messageType": "ASSISTANT"
+  "toolCalls": [],
+  "content": "大阪の現在の気温は8.0度です。"
 }
 ```
 
@@ -164,11 +138,17 @@ curl localhost:8080/chat/fn -s -d text=東京の気温を教えてください�
 
 ```json
 {
-  "content": "東京の気温は10.0度です。",
-  "properties": {
-    "role": "ASSISTANT"
+  "messageType": "ASSISTANT",
+  "metadata": {
+    "refusal": "",
+    "finishReason": "STOP",
+    "index": 0,
+    "id": "chatcmpl-AP6NUbNveJBfz2NaIxST3nK9GVzNf",
+    "role": "ASSISTANT",
+    "messageType": "ASSISTANT"
   },
-  "messageType": "ASSISTANT"
+  "toolCalls": [],
+  "content": "東京の現在の気温は10度です。"
 }
 ```
 
@@ -184,19 +164,21 @@ curl localhost:8080/image-caption -s -d url="https://www.gravatar.com/avatar/e10
 > ちなみにタイミングが悪かった（？）のか、この文章を書いているときは高頻度でChat Completion APIに対してタイムアウトが発生していました。
 > タイムアウトが発生しても何度か実行するとそのうち成功するはず……！
 
-結果は次の通りです（「やけどぐ」に笑った）。
+結果は次の通りです（「やけど」に笑った）。
 
 ```json
 {
   "messageType": "ASSISTANT",
-  "media": [],
   "metadata": {
+    "refusal": "",
     "finishReason": "STOP",
+    "index": 0,
+    "id": "chatcmpl-AP6NpQterfZqPDYyKNJmfWMv6nG16",
     "role": "ASSISTANT",
-    "id": "chatcmpl-9ZOjFAxExx6mX3exAuO7lAHfR0R6p",
     "messageType": "ASSISTANT"
   },
-  "content": "この画像は、雪だるまのイラストです。雪だるまは、黒い目と口、赤い鼻、赤いマフラーをしています。体には青いボタンが3つ描かれています。また、雪だるまの右手には「やけどぐ」という日本語の文字が書かれたオレンジ色の札を持っています。"
+  "toolCalls": [],
+  "content": "この画像には、雪だるまが描かれています。雪だるまは、黒い目とオレンジ色の鼻、赤い口を持ち、赤いマフラーをしています。胴体には青いボタンが3つあります。右手に「やけど」(やけど注意)と書かれた札を持っています。"
 }
 ```
 
