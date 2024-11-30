@@ -1,10 +1,11 @@
 package com.example.web;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
+import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,23 +24,11 @@ public class RagController {
     @PostMapping("/rag1")
     public Object rag1(@RequestParam String question) {
 
-        // 検索
-        List<Document> docs = vectorStore.similaritySearch(question);
-        Iterator<Document> iter = docs.iterator();
-        if (!iter.hasNext()) {
-            // 検索に何もヒットしなかった
-            return "I do not know.";
-        }
-
-        // 生成
-        String context = iter.next().getContent();
-        String prompt = """
-                Answer the question based only on the following context:
-                %2$s
-
-                Question: %1$s
-                """.formatted(question, context);
-        String answer = chatClient.prompt().user(prompt).call().content();
+        String answer = chatClient.prompt()
+                .advisors(
+                        new QuestionAnswerAdvisor(vectorStore),
+                        new SimpleLoggerAdvisor())
+                .user(question).call().content();
 
         return answer;
     }
