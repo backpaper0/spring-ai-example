@@ -4,8 +4,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor;
+import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
+import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,8 @@ public class RagController {
     private ChatClient chatClient;
     @Autowired
     private VectorStore vectorStore;
+    @Autowired
+    private ChatMemory chatMemory;
 
     @PostMapping("/rag1")
     public Object rag1(@RequestParam String question) {
@@ -65,6 +70,17 @@ public class RagController {
                 """.formatted(input, context);
         String answer = chatClient.prompt().user(answerPrompt).call().content();
 
+        return answer;
+    }
+
+    @PostMapping("/chat")
+    public Object chat(@RequestParam String query, @RequestParam String conversationId) {
+        String answer = chatClient.prompt()
+                .advisors(new MessageChatMemoryAdvisor(chatMemory))
+                .advisors(advisor -> advisor
+                        .param(AbstractChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY, conversationId))
+                .user(query)
+                .call().content();
         return answer;
     }
 }

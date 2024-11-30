@@ -3,6 +3,8 @@ package com.example.web;
 import java.util.List;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.chat.memory.InMemoryChatMemory;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
@@ -27,5 +29,10 @@ public class App {
     @Bean
     ChatClient chatClient(ChatClient.Builder builder) {
         return builder.build();
+    }
+
+    @Bean
+    ChatMemory chatMemory() {
+        return new InMemoryChatMemory();
     }
 }
