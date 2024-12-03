@@ -7,9 +7,16 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
+import org.springframework.ai.chat.client.advisor.RetrievalAugmentationAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.document.Document;
+import org.springframework.ai.rag.Query;
+import org.springframework.ai.rag.generation.augmentation.QueryAugmenter;
+import org.springframework.ai.rag.preretrieval.query.transformation.QueryTransformer;
+import org.springframework.ai.rag.retrieval.search.DocumentRetriever;
+import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,33 +49,53 @@ public class RagController {
     public Object rag2(@RequestParam String question, @RequestParam(defaultValue = "") List<String> chatHistory) {
         // https://python.langchain.com/docs/expression_language/cookbook/retrieval#conversational-retrieval-chain
 
-        String condenseQuestionPromt = """
-                Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question, in its original language.
+        QueryTransformer queryTransformer = query -> {
 
-                Chat History:
-                %2$s
-                Follow Up Input: %1$s
-                Standalone question:
-                """
-                .formatted(
-                        question,
-                        chatHistory.stream().collect(Collectors.joining("\n")))
-                .strip();
+            String condenseQuestionPromt = """
+                    Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question, in its original language.
 
-        String input = chatClient.prompt().user(condenseQuestionPromt).call().content();
+                    Chat History:
+                    {chat_history}
+                    Follow Up Input: {question}
+                    Standalone question:
+                    """;
 
-        // 検索
-        List<Document> docs = vectorStore.similaritySearch(input);
-        String context = docs.stream().map(doc -> doc.getContent()).collect(Collectors.joining("\n\n"));
+            String input = chatClient.prompt().user(user -> user
+                    .text(condenseQuestionPromt)
+                    .param("question", query.text())
+                    .param("chat_history", chatHistory.stream().collect(Collectors.joining("\n")))).call().content();
 
-        // 生成
-        String answerPrompt = """
-                Answer the question based only on the following context:
-                %2$s
+            return new Query(input);
+        };
 
-                Question: %1$s
-                """.formatted(input, context);
-        String answer = chatClient.prompt().user(answerPrompt).call().content();
+        DocumentRetriever documentRetriever = VectorStoreDocumentRetriever.builder()
+                .vectorStore(vectorStore)
+                .build();
+
+        QueryAugmenter queryAugmenter = (query, documents) -> {
+
+            String answerPrompt = """
+                    Answer the question based only on the following context:
+                    {context}
+
+                    Question: {question}
+                    """;
+
+            PromptTemplate template = new PromptTemplate(answerPrompt);
+            template.add("question", query.text());
+            template.add("context",
+                    documents.stream().map(doc -> doc.getContent()).collect(Collectors.joining("\n\n")));
+
+            return new Query(template.render());
+        };
+
+        RetrievalAugmentationAdvisor rag = RetrievalAugmentationAdvisor.builder()
+                .queryTransformers(queryTransformer)
+                .documentRetriever(documentRetriever)
+                .queryAugmenter(queryAugmenter)
+                .build();
+
+        String answer = chatClient.prompt().user(question).advisors(rag).call().content();
 
         return answer;
     }
