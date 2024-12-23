@@ -1,4 +1,4 @@
-@description('Cosmos DBのアカウント')
+@description('Azure Cosmos DBのアカウント')
 param cosmosAccountName string
 
 @description('Azure OpenAIのアカウント')
