@@ -35,7 +35,7 @@ public class ImageCaptionController {
     @PostMapping
     public Object postMethodName(@RequestParam URL url) {
         var message = new UserMessage("この画像を説明してください。", new Media(MimeTypeUtils.IMAGE_PNG, url));
-        var prompt = new Prompt(message, OpenAiChatOptions.builder().withModel(OpenAiApi.ChatModel.GPT_4_O_MINI).build());
+        var prompt = new Prompt(message, OpenAiChatOptions.builder().model(OpenAiApi.ChatModel.GPT_4_O_MINI).build());
         var response = chatModel.call(prompt);
         return response.getResult().getOutput();
     }

@@ -31,13 +31,13 @@ public class ChatController {
     @PostMapping(path = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> stream(@RequestParam String text) {
         return chatClient.prompt(text).stream().chatResponse()
-                .map(resp -> resp.getResult().getOutput().getContent());
+                .map(resp -> resp.getResult().getOutput().getText());
     }
 
     @PostMapping("/fn")
     public Object postWithFunctionCalling(@RequestParam String text) {
         ChatResponse resp = chatClient.prompt(text)
-                .functions("weatherFunction")
+                .tools("weatherFunction")
                 .call().chatResponse();
         return resp.getResult().getOutput();
     }

@@ -26,10 +26,10 @@ public class VectorSearchController {
 
     @GetMapping
     public Object search(@RequestParam String q) {
-        SearchRequest request = SearchRequest.query(q).withTopK(1);
+        SearchRequest request = SearchRequest.builder().query(q).topK(1).build();
         // 内部では検索クエリーをOpenAIのEmbeddingでベクトル化し、検索を行っている
         List<Document> documents = vectorStore.similaritySearch(request);
-        return documents.stream().map(doc -> doc.getContent()).toList();
+        return documents.stream().map(doc -> doc.getText()).toList();
     }
 
     /**

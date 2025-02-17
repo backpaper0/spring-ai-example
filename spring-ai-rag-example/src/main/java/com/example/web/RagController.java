@@ -11,7 +11,6 @@ import org.springframework.ai.chat.client.advisor.RetrievalAugmentationAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.prompt.PromptTemplate;
-import org.springframework.ai.document.Document;
 import org.springframework.ai.rag.Query;
 import org.springframework.ai.rag.generation.augmentation.QueryAugmenter;
 import org.springframework.ai.rag.preretrieval.query.transformation.QueryTransformer;
@@ -84,7 +83,7 @@ public class RagController {
             PromptTemplate template = new PromptTemplate(answerPrompt);
             template.add("question", query.text());
             template.add("context",
-                    documents.stream().map(doc -> doc.getContent()).collect(Collectors.joining("\n\n")));
+                    documents.stream().map(doc -> doc.getText()).collect(Collectors.joining("\n\n")));
 
             return new Query(template.render());
         };

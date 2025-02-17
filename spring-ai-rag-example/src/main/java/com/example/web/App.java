@@ -21,7 +21,7 @@ public class App {
 
     @Bean
     SimpleVectorStore simpleVectorStore(EmbeddingModel embeddingModel) {
-        SimpleVectorStore vectorStore = new SimpleVectorStore(embeddingModel);
+        SimpleVectorStore vectorStore = SimpleVectorStore.builder(embeddingModel).build();
         vectorStore.add(List.of(new Document("harrison worked at kensho")));
         return vectorStore;
     }
