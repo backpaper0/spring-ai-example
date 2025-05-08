@@ -1,11 +1,11 @@
 package com.example;
 
-import java.net.URL;
+import java.net.URI;
 
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.ai.model.Media;
+import org.springframework.ai.content.Media;
 import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.ai.openai.api.OpenAiApi;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +33,9 @@ public class ImageCaptionController {
      * @return 画像の説明
      */
     @PostMapping
-    public Object postMethodName(@RequestParam URL url) {
-        var message = new UserMessage("この画像を説明してください。", new Media(MimeTypeUtils.IMAGE_PNG, url));
+    public Object postMethodName(@RequestParam URI url) {
+        var media = Media.builder().mimeType(MimeTypeUtils.IMAGE_PNG).data(url).build();
+        var message = UserMessage.builder().text("この画像を説明してください。").media(media).build();
         var prompt = new Prompt(message, OpenAiChatOptions.builder().model(OpenAiApi.ChatModel.GPT_4_O_MINI).build());
         var response = chatModel.call(prompt);
         return response.getResult().getOutput();
